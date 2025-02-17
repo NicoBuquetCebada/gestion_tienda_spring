@@ -1,5 +1,8 @@
 package com.tienda.controller;
 
+import com.tienda.exception.CustomException;
+import com.tienda.model.DTOLogin;
+import com.tienda.model.DTOUsuario;
 import com.tienda.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,18 +10,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
-    private IUsuarioRepository usuarioRepository;
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     @Autowired
-    public UsuarioController(IUsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
-        this.usuarioService = new UsuarioService(usuarioRepository);
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping
@@ -27,20 +27,28 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> findById(@PathVariable Integer id) {
-        Optional<Usuario> usuario = usuarioService.findById(id);
-        if (usuario.isPresent()) {
-            return ResponseEntity.ok(usuario.get());
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Usuario> findById(@PathVariable Integer id) throws CustomException {
+        return ResponseEntity.ok(usuarioService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Object> save(@Validated @RequestBody Usuario usuario) {
-        Optional<Usuario> usuarioOptional = usuarioService.save(usuario);
-        if (usuarioOptional.isPresent()) {
-            return ResponseEntity.badRequest().body("El usuario ya existe");
-        }
-        return ResponseEntity.ok(usuario);
+    public ResponseEntity<Usuario> save(@Validated @RequestBody Usuario usuario) throws CustomException {
+        return ResponseEntity.ok(usuarioService.save(usuario));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Integer id) throws CustomException {
+        usuarioService.delete(id);
+        return ResponseEntity.ok("Usuario eliminado");
+    }
+
+    @PutMapping
+    public ResponseEntity<Usuario> update(@Validated @RequestBody Usuario usuario) throws CustomException {
+        return ResponseEntity.ok(usuarioService.update(usuario));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<DTOUsuario> login(@Validated @RequestBody DTOLogin login) throws CustomException {
+        return ResponseEntity.ok(usuarioService.login(login));
     }
 }

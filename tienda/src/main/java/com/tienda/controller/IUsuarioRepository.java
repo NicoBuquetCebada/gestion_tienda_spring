@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> {
-    Optional<Usuario> findByNicknameAndPassword(@Size(max = 50) @NotNull @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Error de formato") String nickname, @NotNull @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[.,+\\-!¡?¿])[A-Za-z0-9.,+\\-!¡?¿]{8,30}$", message = "Error de formato") String password);
+    Optional<Usuario> findByNicknameAndPassword(@Size(max = 50) @NotNull @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Error de formato")
+                                                String nickname, @NotNull @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[.,+\\-!¡?¿])[A-Za-z0-9.,+\\-!¡?¿]{8,30}$", message = "Error de formato") String password);
 
     Optional<Usuario> findByNickname(@Size(max = 50) @NotNull @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Error de formato") String nickname);
 }

@@ -31,19 +31,18 @@ public class Usuario {
     @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Error de formato")
     private String nickname;
 
+    // (?=.*[]) comprueba si hay al menos 1 caracter del tipo entre corchetes
     @NotNull
     @Column(name = "password", nullable = false)
-    // (?=.*[]) comprueba si hay al menos 1 caracter del tipo entre corchetes
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[.,+\\-!¡?¿])[A-Za-z0-9.,+\\-!¡?¿]{8,30}$", message = "Error de formato")
     private String password;
 
     @Column(name = "telefono")
-    @Pattern(regexp = "^[0-9]{9}$", message = "Error de formato")
     private Integer telefono;
 
     @Size(max = 100)
     @Column(name = "domicilio", length = 100)
-    @Pattern(regexp = "^[A-Za-z0-9.\\- ]{5,100}$")
+    @Pattern(regexp = "^[A-Za-z0-9.\\- ]{5,100}$", message = "Error de formato")
     private String domicilio;
 
     public Integer getId() {

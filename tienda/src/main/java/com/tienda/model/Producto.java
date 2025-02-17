@@ -1,8 +1,7 @@
 package com.tienda.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -17,14 +16,19 @@ public class Producto {
     @Size(max = 100)
     @NotNull
     @Column(name = "nombre", nullable = false, length = 100)
+    @Pattern(regexp = "^[a-zA-Z0-9 ]{5,100}$")
     private String nombre;
 
     @Lob
     @Column(name = "descripcion")
+    @NotNull
+    @NotBlank
+    @NotEmpty
     private String descripcion;
 
     @NotNull
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
+    @Min(value = 0, message = "El precio debe ser mayor a 0")
     private BigDecimal precio;
 
     @NotNull

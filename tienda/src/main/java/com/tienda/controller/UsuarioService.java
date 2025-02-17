@@ -1,5 +1,8 @@
 package com.tienda.controller;
 
+import com.tienda.exception.CustomException;
+import com.tienda.model.DTOLogin;
+import com.tienda.model.DTOUsuario;
 import com.tienda.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,33 +24,43 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> findById(Integer id) {
-        return usuarioRepository.findById(id);
-    }
-
-    public Optional<Usuario> save(Usuario usuario) {
-        Optional<Usuario> opt = findById(usuario.getId());
-        if (opt.isEmpty()) {
-            usuarioRepository.save(usuario);
-        }
-        return opt;
-    }
-
-    public boolean delete(Integer id) {
-        Optional<Usuario> opt = findById(id);
+    public Usuario findById(Integer id) throws CustomException {
+        Optional<Usuario> opt = usuarioRepository.findById(id);
         if (opt.isPresent()) {
-            usuarioRepository.delete(opt.get());
-            return true;
+            return opt.get();
         }
-        return false;
+        throw new CustomException("Usuario no encontrado");
     }
 
-    public Usuario update(Usuario usuario) {
+    public Usuario save(Usuario usuario) throws CustomException {
+        if (!String.valueOf(usuario.getTelefono()).matches("^[69][0-9]{8}$")) {
+            throw new CustomException("Formato del número de teléfono incorrecto");
+        }
+        if (findByNickname(usuario.getNickname()).isEmpty()) {
+            return usuarioRepository.save(usuario);
+        }
+        throw new CustomException("El usuario ya existe");
+    }
+
+    public void delete(Integer id) throws CustomException {
+        Usuario usuario = findById(id);
+        usuarioRepository.delete(usuario);
+    }
+
+    public Usuario update(Usuario usuario) throws CustomException {
+        findById(usuario.getId());
         return usuarioRepository.save(usuario);
     }
 
-    public Optional<Usuario> findByNicknameAndPassword(String nickname, String password) {
-        return usuarioRepository.findByNicknameAndPassword(nickname, password);
+    public DTOUsuario login(DTOLogin login) throws CustomException {
+        if (findByNickname(login.getNickname()).isEmpty()) {
+            throw new CustomException("Nickname incorrecto");
+        }
+        Optional<Usuario> opt = usuarioRepository.findByNicknameAndPassword(login.getNickname(), login.getPassword());
+        if (opt.isEmpty()) {
+            throw new CustomException("Contraseña incorrecta");
+        }
+        return new DTOUsuario(opt.get());
     }
 
     public Optional<Usuario> findByNickname(String nickname) {
