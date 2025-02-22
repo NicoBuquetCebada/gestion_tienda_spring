@@ -37,6 +37,7 @@ public class UsuarioService {
         return opt.get();
     }
 
+    // Compruebo la contraseña aquí por que con el hasheado Valid da problemas
     public Usuario register(Usuario usuario) throws CustomException {
         if (findByNickname(usuario.getNickname()).isPresent()) {
             throw new CustomException("El usuario ya existe");
