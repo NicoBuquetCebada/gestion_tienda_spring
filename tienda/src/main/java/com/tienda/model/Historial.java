@@ -2,41 +2,55 @@ package com.tienda.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@Entity
-@Table(name = "compras")
-public class Compra {
-    @EmbeddedId
-    private CompraId id;
+import java.time.LocalDate;
 
-    @MapsId("usuarioId")
+@Entity
+@Table(name = "historial")
+public class Historial {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "usuario_id", nullable = false)
     private com.tienda.model.Usuario usuario;
 
-    @MapsId("productoId")
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "producto_id", nullable = false)
     private com.tienda.model.Producto producto;
 
     @NotNull
-    @Column(name = "id", nullable = false)
-    private Integer id1;
+    @Column(name = "fecha_compra", nullable = false)
+    private LocalDate fechaCompra;
 
     @ColumnDefault("1")
     @Column(name = "cantidad")
     private Integer cantidad;
 
-    public CompraId getId() {
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "tipo", nullable = false, length = 100)
+    private String tipo;
+
+    @Size(max = 200)
+    @Column(name = "descripcion", length = 200)
+    private String descripcion;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(CompraId id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -56,12 +70,12 @@ public class Compra {
         this.producto = producto;
     }
 
-    public Integer getId1() {
-        return id1;
+    public LocalDate getFechaCompra() {
+        return fechaCompra;
     }
 
-    public void setId1(Integer id1) {
-        this.id1 = id1;
+    public void setFechaCompra(LocalDate fechaCompra) {
+        this.fechaCompra = fechaCompra;
     }
 
     public Integer getCantidad() {
@@ -70,6 +84,22 @@ public class Compra {
 
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
 }

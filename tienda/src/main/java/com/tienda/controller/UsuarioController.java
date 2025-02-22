@@ -1,9 +1,12 @@
 package com.tienda.controller;
 
 import com.tienda.exception.CustomException;
+import com.tienda.exception.CustomNotFoundException;
+import com.tienda.exception.CustomUnauthorizedException;
 import com.tienda.model.DTOLogin;
 import com.tienda.model.DTOUsuario;
 import com.tienda.model.Usuario;
+import com.tienda.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,28 +30,27 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> findById(@PathVariable Integer id) throws CustomException {
+    public ResponseEntity<Usuario> findById(@PathVariable Integer id) throws CustomNotFoundException {
         return ResponseEntity.ok(usuarioService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> save(@Validated @RequestBody Usuario usuario) throws CustomException {
-        return ResponseEntity.ok(usuarioService.save(usuario));
+    public ResponseEntity<Usuario> register(@Validated @RequestBody Usuario usuario) throws CustomException {
+        return ResponseEntity.ok(usuarioService.register(usuario));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) throws CustomException {
+    public void delete(@PathVariable Integer id) throws CustomNotFoundException {
         usuarioService.delete(id);
-        return ResponseEntity.ok("Usuario eliminado");
     }
 
     @PutMapping
-    public ResponseEntity<Usuario> update(@Validated @RequestBody Usuario usuario) throws CustomException {
+    public ResponseEntity<Usuario> update(@Validated @RequestBody Usuario usuario) throws CustomNotFoundException {
         return ResponseEntity.ok(usuarioService.update(usuario));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<DTOUsuario> login(@Validated @RequestBody DTOLogin login) throws CustomException {
+    public ResponseEntity<DTOUsuario> login(@Validated @RequestBody DTOLogin login) throws CustomUnauthorizedException {
         return ResponseEntity.ok(usuarioService.login(login));
     }
 }

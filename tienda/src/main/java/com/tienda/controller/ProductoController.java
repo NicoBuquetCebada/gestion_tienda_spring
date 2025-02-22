@@ -1,6 +1,8 @@
 package com.tienda.controller;
 
 import com.tienda.exception.CustomException;
+import com.tienda.exception.CustomNotFoundException;
+import com.tienda.service.ProductoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ public class ProductoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> findById(@PathVariable Integer id) throws CustomException {
+    public ResponseEntity<Producto> findById(@PathVariable Integer id) throws CustomNotFoundException {
         return ResponseEntity.ok(productoService.findById(id));
     }
 
@@ -33,13 +35,12 @@ public class ProductoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) throws CustomException {
+    public void delete(@PathVariable Integer id) throws CustomNotFoundException {
         productoService.delete(id);
-        return ResponseEntity.ok("Producto eliminado");
     }
 
     @PutMapping
-    public ResponseEntity<Producto> update(@Validated @RequestBody Producto producto) throws CustomException {
+    public ResponseEntity<Producto> update(@Validated @RequestBody Producto producto) throws CustomNotFoundException {
         return ResponseEntity.ok(productoService.update(producto));
     }
 

@@ -1,7 +1,9 @@
-package com.tienda.controller;
+package com.tienda.service;
 
 import com.tienda.exception.CustomException;
+import com.tienda.exception.CustomNotFoundException;
 import com.tienda.model.Producto;
+import com.tienda.repository.IProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,35 +24,37 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
-    public Producto findById(Integer id) throws CustomException {
+    public Producto findById(Integer id) throws CustomNotFoundException {
         Optional <Producto> opt = productoRepository.findById(id);
-        if (opt.isPresent()) {
-            return opt.get();
+        if (opt.isEmpty()) {
+            throw new CustomNotFoundException("Producto no encontrado");
         }
-        throw new CustomException("Producto no encontrado");
+        return opt.get();
     }
 
     public Producto save(Producto producto) throws CustomException {
-        Optional<Producto> opt = productoRepository.findByNombre((producto.getNombre()));
-        if (opt.isPresent()) {
+        if (findByNombre(producto.getNombre()).isPresent()) {
             throw new CustomException("El producto ya existe");
-        } else if (producto.getPrecio().compareTo(BigDecimal.valueOf(10)) == -1) {
+        } else if (producto.getPrecio().compareTo(BigDecimal.valueOf(10)) < 0) {
             producto.setDescripcion(producto.getDescripcion() + " - producto de oferta");
-        } else if (producto.getPrecio().compareTo(BigDecimal.valueOf(200)) == 1) {
+        } else if (producto.getPrecio().compareTo(BigDecimal.valueOf(200)) > 0) {
             producto.setDescripcion(producto.getDescripcion() + " - producto de calidad");
         }
         return productoRepository.save(producto);
     }
 
-    public void delete(Integer id) throws CustomException {
+    public void delete(Integer id) throws CustomNotFoundException {
         Producto producto = findById(id);
         productoRepository.delete(producto);
     }
 
-    public Producto update(Producto producto) throws CustomException {
+    public Producto update(Producto producto) throws CustomNotFoundException {
         findById(producto.getId());
         return productoRepository.save(producto);
     }
 
+    public Optional<Producto> findByNombre(String nombre) {
+        return productoRepository.findByNombre(nombre);
+    }
 
 }

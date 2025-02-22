@@ -1,5 +1,6 @@
 package com.tienda.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    // Custom exception, para la capa de servicio
+    // Custom exception, capa de servicio
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Map<String, String>> handleCustomException(CustomException e) {
         Map<String, String> error = new HashMap<>();
@@ -28,7 +29,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // IllegalArgument Exception, para las validaciones que no se pueden hacer con Jakarta Bean Validation (capa de servicio)
+    // Custom NotFound exception, en caso de recurso no encontrado 404, capa de servicio
+    @ExceptionHandler(CustomNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCustomNotFoundException(CustomNotFoundException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error 404", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    // Custom Unauthorized exception, en caso de fallo de autenticacion 401, capa de servicio
+    @ExceptionHandler(CustomUnauthorizedException.class)
+    public ResponseEntity<Map<String, String>> handleCustomUnauthorizedException(CustomNotFoundException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error 401", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    // IllegalArgument exception, para las validaciones que no se pueden hacer con Jakarta Bean Validation (capa de servicio)
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException e) {
         Map<String, String> error = new HashMap<>();

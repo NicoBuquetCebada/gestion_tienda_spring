@@ -6,43 +6,46 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 50)
-    @NotNull
+    @Size(max = 50, min = 3, message = "el tamaño debe ser de 3 a 50 caracteres")
+    @NotNull(message = "el campo no puede ser nulo")
+    @Pattern(regexp = "^[A-Za-z]*$", message = "solo puede conetener caracteres alfabeticos")
     @Column(name = "nombre", nullable = false, length = 50)
-    @Pattern(regexp = "^[A-Za-z]{3,50}$", message = "Error de formato")
     private String nombre;
 
-    @Size(max = 50)
-    @NotNull
+    @Size(max = 50, min = 3, message = "el tamaño debe ser de 3 a 50 caracteres")
+    @NotNull(message = "el campo no puede ser nulo")
+    @Pattern(regexp = "^[A-Za-z]*$", message = "solo puede conetener caracteres alfabeticos")
     @Column(name = "apellido", nullable = false, length = 50)
-    @Pattern(regexp = "^[A-Za-z]{3,50}$", message = "Error de formato")
     private String apellido;
 
-    @Size(max = 50)
-    @NotNull
+    @Size(max = 50, min = 1, message = "el tamaño debe ser de 1 a 50 caracteres")
+    @NotNull(message = "el campo no puede ser nulo")
+    @Pattern(regexp = "^[A-Za-z0-9]*$", message = "solo puede contener caracteres alfanumericos")
     @Column(name = "nickname", nullable = false, length = 50)
-    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Error de formato")
     private String nickname;
 
-    // (?=.*[]) comprueba si hay al menos 1 caracter del tipo entre corchetes
-    @NotNull
+    @Size(max = 30, min = 8, message = "el tamaño debe ser de 8 a 30 caracteres")
+    @NotNull(message = "el campo no puede ser nulo")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[.,+\\-!¡?¿])[A-Za-z0-9.,+\\-!¡?¿]*$",
+            message = "tiene que contener como minimo una mayuscula una minuscula y un caracter especial (.,+-!¡?¿)")
     @Column(name = "password", nullable = false)
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[.,+\\-!¡?¿])[A-Za-z0-9.,+\\-!¡?¿]{8,30}$", message = "Error de formato")
     private String password;
 
-    @Column(name = "telefono")
-    private Integer telefono;
+    @Size(max = 9, min = 9, message = "el tamaño debe ser exactamente 9 caracteres")
+    @Pattern(regexp = "^[69][1-9]{8}$", message ="tiene que empezar por 6 o 9 y solo puede contener numeros")
+    @Column(name = "telefono", length = 15)
+    private String telefono;
 
-    @Size(max = 100)
+    @Size(max = 100, min = 5, message = "el tamaño debe ser de 5 a 100 caracteres")
+    @Pattern(regexp = "^[A-Za-z0-9.\\- ]*$", message = "solo puede contener caracteres alfanumericos y los caracteres especiales .-")
     @Column(name = "domicilio", length = 100)
-    @Pattern(regexp = "^[A-Za-z0-9.\\- ]{5,100}$", message = "Error de formato")
     private String domicilio;
 
     public Integer getId() {
@@ -85,11 +88,11 @@ public class Usuario {
         this.password = password;
     }
 
-    public Integer getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(Integer telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 

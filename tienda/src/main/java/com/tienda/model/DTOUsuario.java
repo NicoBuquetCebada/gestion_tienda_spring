@@ -1,5 +1,6 @@
 package com.tienda.model;
 
+// dto para devolver los datos utiles de usuario
 public class DTOUsuario {
     private String nombre;
     private String apellido;

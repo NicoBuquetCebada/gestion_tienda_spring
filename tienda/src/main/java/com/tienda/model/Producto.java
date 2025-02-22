@@ -6,37 +6,35 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "productos")
+@Table(name = "producto")
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 100)
-    @NotNull
+    @Size(max = 100, min = 5, message = "el tamaño debe ser de 5 a 100")
+    @NotNull(message = "el campo no puede ser nulo")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "solo puede contener caracteres alfanumericos")
     @Column(name = "nombre", nullable = false, length = 100)
-    @Pattern(regexp = "^[a-zA-Z0-9 ]{5,100}$")
     private String nombre;
 
     @Lob
     @Column(name = "descripcion")
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private String descripcion;
 
-    @NotNull
+    @NotNull(message = "el campo no puede ser nulo")
+    @Digits(integer = 4, fraction = 2)
+    @DecimalMin(value = "0.00", message = "el valor no puede ser negativo")
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
-    @Min(value = 0, message = "El precio debe ser mayor a 0")
     private BigDecimal precio;
 
-    @NotNull
     @Lob
-    @Column(name = "imagen", nullable = false)
+    @Column(name = "imagen")
     private String imagen;
 
-    @NotNull
+    @NotNull(message = "el campo no puede ser nulo")
+    @Min(value = 1, message = "el valor tiene que ser mayor a 0")
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
