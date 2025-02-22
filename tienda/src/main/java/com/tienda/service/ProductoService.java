@@ -5,7 +5,8 @@ import com.tienda.exception.CustomNotFoundException;
 import com.tienda.model.Producto;
 import com.tienda.repository.IProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-@CacheConfig(cacheNames = "productos")
 @Service
 public class ProductoService {
     private final IProductoRepository productoRepository;
@@ -27,7 +27,7 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
-    @Cacheable
+    @Cacheable(cacheNames = "producto")
     public Producto findById(Integer id) throws CustomNotFoundException {
         Optional <Producto> opt = productoRepository.findById(id);
         if (opt.isEmpty()) {
@@ -47,12 +47,15 @@ public class ProductoService {
         return productoRepository.save(producto);
     }
 
-    //@CacheEvict(cacheNames = "productos", key = "#id")
+    // Esto hace que cuando se ejecute un delete se desaloje la cache del producto
+    @CacheEvict(cacheNames="producto", key="#id")
     public void delete(Integer id) throws CustomNotFoundException {
         Producto producto = findById(id);
         productoRepository.delete(producto);
     }
 
+    // Esto hace que cuando se ejecute un update se actualice la cache del producto
+    @CachePut(cacheNames="producto", key="#producto.id")
     public Producto update(Producto producto) throws CustomNotFoundException {
         findById(producto.getId());
         return productoRepository.save(producto);

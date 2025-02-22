@@ -5,6 +5,9 @@ import com.tienda.exception.CustomNotFoundException;
 import com.tienda.model.*;
 import com.tienda.repository.IHistorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,6 +32,7 @@ public class HistorialService {
         return historialRepository.findAll();
     }
 
+    @Cacheable(cacheNames = "historial")
     public Historial findById(Integer id) throws CustomNotFoundException {
         Optional<Historial> opt =  historialRepository.findById(id);
         if (opt.isEmpty()) {
@@ -78,11 +82,13 @@ public class HistorialService {
         return historialRepository.save(historial);
     }
 
+    @CacheEvict(cacheNames = "historial", key = "#id")
     public void delete(Integer id) throws CustomNotFoundException {
         Historial historial = findById(id);
         historialRepository.delete(historial);
     }
 
+    @CachePut(cacheNames = "historial", key = "#historial.id")
     public Historial update(Historial historial) throws CustomNotFoundException {
         findById(historial.getId());
         return historialRepository.save(historial);
