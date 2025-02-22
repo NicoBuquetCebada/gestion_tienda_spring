@@ -50,7 +50,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<DTOUsuario> login(@Validated @RequestBody DTOLogin login) throws CustomUnauthorizedException {
+    public ResponseEntity<DTOUsuario> login(@RequestBody DTOLogin login) throws CustomUnauthorizedException {
         return ResponseEntity.ok(usuarioService.login(login));
     }
 }

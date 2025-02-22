@@ -1,5 +1,7 @@
 package com.tienda.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,12 +20,14 @@ public class Historial {
     private Integer id;
 
     @NotNull
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "usuario_id", nullable = false)
     private com.tienda.model.Usuario usuario;
 
     @NotNull
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "producto_id", nullable = false)
@@ -45,6 +49,16 @@ public class Historial {
     @Size(max = 200)
     @Column(name = "descripcion", length = 200)
     private String descripcion;
+
+    @JsonProperty("usuarioId")
+    public Integer usuarioId() {
+        return usuario.getId();
+    }
+
+    @JsonProperty("productoId")
+    public Integer productoId() {
+        return producto.getId();
+    }
 
     public Integer getId() {
         return id;

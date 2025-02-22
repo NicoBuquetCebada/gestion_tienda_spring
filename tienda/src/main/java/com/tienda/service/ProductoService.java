@@ -5,12 +5,15 @@ import com.tienda.exception.CustomNotFoundException;
 import com.tienda.model.Producto;
 import com.tienda.repository.IProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@CacheConfig(cacheNames = "productos")
 @Service
 public class ProductoService {
     private final IProductoRepository productoRepository;
@@ -24,6 +27,7 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+    @Cacheable
     public Producto findById(Integer id) throws CustomNotFoundException {
         Optional <Producto> opt = productoRepository.findById(id);
         if (opt.isEmpty()) {
@@ -43,6 +47,7 @@ public class ProductoService {
         return productoRepository.save(producto);
     }
 
+    //@CacheEvict(cacheNames = "productos", key = "#id")
     public void delete(Integer id) throws CustomNotFoundException {
         Producto producto = findById(id);
         productoRepository.delete(producto);
@@ -55,6 +60,12 @@ public class ProductoService {
 
     public Optional<Producto> findByNombre(String nombre) {
         return productoRepository.findByNombre(nombre);
+    }
+
+    public void updateStock(Producto producto, Integer cantidad) {
+        Integer stock_updated = producto.getStock() + cantidad;
+        producto.setStock(stock_updated);
+        productoRepository.save(producto);
     }
 
 }

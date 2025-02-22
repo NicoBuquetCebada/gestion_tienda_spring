@@ -39,7 +39,7 @@ public class Usuario {
     private String password;
 
     @Size(max = 9, min = 9, message = "el tamaño debe ser exactamente 9 caracteres")
-    @Pattern(regexp = "^[69][1-9]{8}$", message ="tiene que empezar por 6 o 9 y solo puede contener numeros")
+    @Pattern(regexp = "^[69][1-9]*$", message ="tiene que empezar por 6 o 9 y solo puede contener numeros")
     @Column(name = "telefono", length = 15)
     private String telefono;
 
