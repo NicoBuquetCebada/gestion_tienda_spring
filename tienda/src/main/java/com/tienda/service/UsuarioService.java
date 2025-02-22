@@ -8,6 +8,7 @@ import com.tienda.model.DTOUsuario;
 import com.tienda.model.Usuario;
 import com.tienda.repository.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final IUsuarioRepository usuarioRepository;
+    BCryptPasswordEncoder encriptador = new BCryptPasswordEncoder();
 
     @Autowired
     public UsuarioService(IUsuarioRepository usuarioRepository) {
@@ -38,7 +40,11 @@ public class UsuarioService {
     public Usuario register(Usuario usuario) throws CustomException {
         if (findByNickname(usuario.getNickname()).isPresent()) {
             throw new CustomException("El usuario ya existe");
+        } else if (!usuario.getPassword().matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[.,+\\-!¡?¿])[A-Za-z0-9.,+\\-!¡?¿]{8,30}$")) {
+            throw new CustomException("La contraseña tiene que contener como minimo una mayuscula, una minuscula, un caracter especial (.,+-!¡?¿) y tener entre 8 y 30 caracteres");
         }
+        String pass_hashed = encriptador.encode(usuario.getPassword());
+        usuario.setPassword(pass_hashed);
         return usuarioRepository.save(usuario);
     }
 
@@ -55,11 +61,10 @@ public class UsuarioService {
     public DTOUsuario login(DTOLogin login) throws CustomUnauthorizedException {
         String nick = login.getNickname();
         String pass = login.getPassword();
-        if (findByNickname(nick).isEmpty()) {
-            throw new CustomUnauthorizedException("Nickname incorrecto");
-        }
-        Optional<Usuario> opt = usuarioRepository.findByNicknameAndPassword(nick, pass);
+        Optional<Usuario> opt = usuarioRepository.findByNickname(nick);
         if (opt.isEmpty()) {
+            throw new CustomUnauthorizedException("Nickname incorrecto");
+        } else if (!encriptador.matches(pass, opt.get().getPassword())) {
             throw new CustomUnauthorizedException("Contraseña incorrecta");
         }
         return new DTOUsuario(opt.get());

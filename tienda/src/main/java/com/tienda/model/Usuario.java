@@ -31,10 +31,8 @@ public class Usuario {
     @Column(name = "nickname", nullable = false, length = 50)
     private String nickname;
 
-    @Size(max = 30, min = 8, message = "el tamaño debe ser de 8 a 30 caracteres")
+    @Lob
     @NotNull(message = "el campo no puede ser nulo")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[.,+\\-!¡?¿])[A-Za-z0-9.,+\\-!¡?¿]*$",
-            message = "tiene que contener como minimo una mayuscula una minuscula y un caracter especial (.,+-!¡?¿)")
     @Column(name = "password", nullable = false)
     private String password;
 
