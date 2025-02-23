@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCustomNotFoundException(CustomNotFoundException e) {
         Map<String, String> error = new HashMap<>();
-        error.put("error 404 (not found)", e.getMessage());
+        error.put("error", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomUnauthorizedException.class)
     public ResponseEntity<Map<String, String>> handleCustomUnauthorizedException(CustomUnauthorizedException e) {
         Map<String, String> error = new HashMap<>();
-        error.put("error 401 (unauthorized)", e.getMessage());
+        error.put("error", e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
