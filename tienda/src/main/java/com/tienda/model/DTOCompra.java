@@ -20,6 +20,7 @@ public class DTOCompra {
     public DTOCompra(Integer usuarioId, Integer productoId, Integer cantidad, String descripcion) {
         setUsuarioId(usuarioId);
         setProductoId(productoId);
+        if (cantidad < 1) {cantidad = 1;}
         setCantidad(cantidad);
         setDescripcion(descripcion);
     }
