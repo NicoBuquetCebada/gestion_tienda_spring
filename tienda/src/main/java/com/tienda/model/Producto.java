@@ -15,7 +15,7 @@ public class Producto {
 
     @Size(max = 100, min = 5, message = "el tamaño debe ser de 5 a 100")
     @NotNull(message = "el campo no puede ser nulo")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "solo puede contener caracteres alfanumericos")
+    @Pattern(regexp = "^[a-zA-Z0-9 ´]*$", message = "solo puede contener caracteres alfanumericos")
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 

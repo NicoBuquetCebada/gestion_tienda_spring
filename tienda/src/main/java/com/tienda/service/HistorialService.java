@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,30 @@ public class HistorialService {
             throw new CustomNotFoundException("Entrada del historial no encontrada");
         }
         return opt.get();
+    }
+
+    public List<DTOHistorial> findCompraByUsuario(Integer usuarioId) throws CustomNotFoundException {
+        Usuario usuario = usuarioService.findById(usuarioId);
+        List<Historial> historial = historialRepository.findHistorialByUsuario(usuario);
+        List<DTOHistorial> compras = new ArrayList<>();
+        for (Historial entrada : historial) {
+            if (entrada.getTipo().equals("COMPRA")) {
+                compras.add(new DTOHistorial(entrada));
+            }
+        }
+        return compras;
+    }
+
+    public List<DTOHistorial> findDevolucionByUsuario(Integer usuarioId) throws CustomNotFoundException {
+        Usuario usuario = usuarioService.findById(usuarioId);
+        List<Historial> historial = historialRepository.findHistorialByUsuario(usuario);
+        List<DTOHistorial> devoluciones = new ArrayList<>();
+        for (Historial entrada : historial) {
+            if (entrada.getTipo().equals("DEVOLUCION")) {
+                devoluciones.add(new DTOHistorial(entrada));
+            }
+        }
+        return devoluciones;
     }
 
     public Historial comprar(DTOCompra compra) throws CustomNotFoundException, CustomException {

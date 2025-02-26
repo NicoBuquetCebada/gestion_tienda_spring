@@ -4,16 +4,16 @@ import com.tienda.exception.CustomException;
 import com.tienda.exception.CustomNotFoundException;
 import com.tienda.model.DTOCompra;
 import com.tienda.model.DTODevolucion;
+import com.tienda.model.DTOHistorial;
 import com.tienda.model.Historial;
 import com.tienda.service.HistorialService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5173/")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/historial")
 public class HistorialController {
@@ -53,5 +53,17 @@ public class HistorialController {
     public ResponseEntity<Historial> update(@RequestBody Historial historial) throws CustomNotFoundException {
         return ResponseEntity.ok(historialService.update(historial));
     }
+
+    @GetMapping("/compras/{id}")
+    public ResponseEntity<List<DTOHistorial>> getComprasByUsuario(@PathVariable Integer id) throws CustomNotFoundException {
+        return ResponseEntity.ok(historialService.findCompraByUsuario(id));
+    }
+
+    @GetMapping("/devoluciones/{id}")
+    public ResponseEntity<List<DTOHistorial>> getDevolucionesByUsuario(@PathVariable Integer id) throws CustomNotFoundException {
+        return ResponseEntity.ok(historialService.findDevolucionByUsuario(id));
+    }
+
+
 
 }
